@@ -1,7 +1,9 @@
 package encode
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 
 	"github.com/danielkrainas/wiph/cipher"
 	"github.com/danielkrainas/wiph/cmd"
@@ -12,26 +14,49 @@ func init() {
 	cmd.Register("encode", Info)
 }
 
+func readUrlList(filename string) ([]string, error) {
+	fp, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	defer fp.Close()
+	s := bufio.NewScanner(fp)
+	urls := make([]string, 0)
+	for s.Scan() {
+		urls = append(urls, s.Text())
+	}
+
+	return urls, nil
+}
+
 func run(ctx context.Context, args []string) error {
-	urs := context.GetStringValue(ctx, "flags.urls")
-	var url = args[0]
-	var url2 = args[1]
 	msg := context.GetStringValue(ctx, "flags.message")
 	if msg == "" {
 		msg = "the quick fox jumps over the gate for whatever reason and danny dances the jig"
 	}
 
-	references, err := cipher.GetReferences(url, 0)
-	if err != nil {
-		return fmt.Errorf("error getting references: %v\n", err)
+	var urls []string
+	var err error
+	urlListFile := context.GetStringValue(ctx, "flags.urls")
+	if urlListFile != "" {
+		urls, err = readUrlList(urlListFile)
+		if err != nil {
+			return err
+		}
 	}
 
-	otherRefs, err := cipher.GetReferences(url2, 1)
-	if err != nil {
-		return fmt.Errorf("error getting references: %v\n", err)
-	}
+	var references []*cipher.PageReference
+	i := uint16(0)
+	for _, url := range urls {
+		refs, err := cipher.GetReferences(url, i)
+		if err != nil {
+			return fmt.Errorf("error getting references: %v\n", err)
+		}
 
-	references = append(references, otherRefs...)
+		references = append(references, refs...)
+		i++
+	}
 
 	var used []*cipher.EncodedReference
 	buf := []byte(msg)
