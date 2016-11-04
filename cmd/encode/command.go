@@ -17,7 +17,11 @@ func run(ctx context.Context, args []string) error {
 	fmt.Printf("urls: %s", urs)
 	var url = args[0]
 	var url2 = args[1]
-	msg := "the quick fox jumps over the gate for whatever reason and danny dances the jig"
+	msg := context.GetStringValue(ctx, "flags.message")
+	if msg == "" {
+		msg = "the quick fox jumps over the gate for whatever reason and danny dances the jig"
+	}
+
 	references, err := cipher.GetReferences(url, 0)
 	if err != nil {
 		return fmt.Errorf("error getting references: %v\n", err)
