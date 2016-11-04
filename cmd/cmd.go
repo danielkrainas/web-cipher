@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"strconv"
+
 	"github.com/spf13/cobra"
 
 	"github.com/danielkrainas/wiph/context"
@@ -93,7 +95,17 @@ func contextWithFlags(ctx context.Context, cmd *cobra.Command, flags []*Flag) co
 	values := make(map[string]interface{})
 	for _, f := range flags {
 		v := cmd.PersistentFlags().Lookup(f.Long).Value.String()
-		values["flags."+f.Long] = v
+		vi := interface{}(v)
+		if f.Type == FlagBool {
+			b, err := strconv.ParseBool(v)
+			if err != nil {
+				vi = v
+			} else {
+				vi = b
+			}
+		}
+
+		values["flags."+f.Long] = vi
 	}
 
 	return context.WithValues(ctx, values)
