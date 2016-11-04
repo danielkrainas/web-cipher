@@ -7,9 +7,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/danielkrainas/wiph/cipher"
-	"github.com/danielkrainas/wiph/cmd"
-	"github.com/danielkrainas/wiph/context"
+	"github.com/danielkrainas/weph/cipher"
+	"github.com/danielkrainas/weph/cmd"
+	"github.com/danielkrainas/weph/context"
 )
 
 func init() {

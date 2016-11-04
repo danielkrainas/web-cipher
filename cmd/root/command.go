@@ -1,11 +1,11 @@
 package root
 
 import (
-	"github.com/danielkrainas/wiph/cmd"
+	"github.com/danielkrainas/weph/cmd"
 )
 
 var Info = &cmd.Info{
-	Use:   "wiph",
-	Short: "`wiph`",
-	Long:  "`wiph`",
+	Use:   "weph",
+	Short: "`weph`",
+	Long:  "`weph`",
 }

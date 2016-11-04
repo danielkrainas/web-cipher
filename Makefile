@@ -13,7 +13,7 @@ ifeq ($(BUILD_VERSION),)
 	endif
 endif
 
-IMAGE_REPO=dakr/wiph
+IMAGE_REPO=dakr/weph
 ifeq ($(IMAGE_NAME),)
 	IMAGE_NAME=$(IMAGE_REPO):$(BUILD_VERSION)
 endif 

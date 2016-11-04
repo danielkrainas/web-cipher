@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/danielkrainas/wiph/context"
+	"github.com/danielkrainas/weph/context"
 )
 
 type ExecutorFunc func(ctx context.Context, args []string) error

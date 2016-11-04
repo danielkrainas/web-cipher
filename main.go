@@ -5,11 +5,11 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/danielkrainas/wiph/cmd"
-	_ "github.com/danielkrainas/wiph/cmd/encode"
-	"github.com/danielkrainas/wiph/cmd/root"
-	_ "github.com/danielkrainas/wiph/cmd/version"
-	"github.com/danielkrainas/wiph/context"
+	"github.com/danielkrainas/weph/cmd"
+	_ "github.com/danielkrainas/weph/cmd/encode"
+	"github.com/danielkrainas/weph/cmd/root"
+	_ "github.com/danielkrainas/weph/cmd/version"
+	"github.com/danielkrainas/weph/context"
 )
 
 var appVersion string

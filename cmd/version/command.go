@@ -3,8 +3,8 @@ package version
 import (
 	"fmt"
 
-	"github.com/danielkrainas/wiph/cmd"
-	"github.com/danielkrainas/wiph/context"
+	"github.com/danielkrainas/weph/cmd"
+	"github.com/danielkrainas/weph/context"
 )
 
 func init() {
