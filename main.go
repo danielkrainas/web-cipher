@@ -1,10 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
-
-	log "github.com/Sirupsen/logrus"
 
 	"github.com/danielkrainas/wiph/cmd"
 	_ "github.com/danielkrainas/wiph/cmd/encode"
@@ -27,6 +26,6 @@ func main() {
 
 	dispatch := cmd.CreateDispatcher(ctx, root.Info)
 	if err := dispatch(); err != nil {
-		log.Fatalln(err)
+		fmt.Printf("FATAL: %v\n", err)
 	}
 }
