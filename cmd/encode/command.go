@@ -14,7 +14,6 @@ func init() {
 
 func run(ctx context.Context, args []string) error {
 	urs := context.GetStringValue(ctx, "flags.urls")
-	fmt.Printf("urls: %s", urs)
 	var url = args[0]
 	var url2 = args[1]
 	msg := context.GetStringValue(ctx, "flags.message")
