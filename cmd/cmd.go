@@ -20,6 +20,7 @@ type FlagType string
 
 var (
 	FlagString FlagType = "string"
+	FlagBool   FlagType = "bool"
 )
 
 type Flag struct {
@@ -63,6 +64,8 @@ func makeCobraCommand(ctx context.Context, info *Info) *cobra.Command {
 
 	for _, f := range info.Flags {
 		switch f.Type {
+		case FlagBool:
+			cmd.PersistentFlags().BoolP(f.Long, f.Short, false, "")
 		case FlagString:
 			cmd.PersistentFlags().StringP(f.Long, f.Short, "", "")
 		}
