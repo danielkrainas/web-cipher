@@ -28,6 +28,7 @@ type Flag struct {
 	Long        string
 	Description string
 	Type        FlagType
+	Default     interface{}
 }
 
 var registry map[string]*Info = make(map[string]*Info)
@@ -63,11 +64,16 @@ func makeCobraCommand(ctx context.Context, info *Info) *cobra.Command {
 	}
 
 	for _, f := range info.Flags {
+		def := f.Default
 		switch f.Type {
 		case FlagBool:
-			cmd.PersistentFlags().BoolP(f.Long, f.Short, false, "")
+			cmd.PersistentFlags().BoolP(f.Long, f.Short, def.(bool), "")
 		case FlagString:
-			cmd.PersistentFlags().StringP(f.Long, f.Short, "", "")
+			if def == nil {
+				def = ""
+			}
+
+			cmd.PersistentFlags().StringP(f.Long, f.Short, def.(string), "")
 		}
 
 	}
