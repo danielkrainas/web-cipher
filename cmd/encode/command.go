@@ -33,7 +33,6 @@ func run(ctx context.Context, args []string) error {
 
 	references = append(references, otherRefs...)
 
-	//fmt.Printf("references: %d\n", len(references))
 	var used []*cipher.EncodedReference
 	buf := []byte(msg)
 	for _, b := range buf {
@@ -41,7 +40,6 @@ func run(ctx context.Context, args []string) error {
 		if encoded == nil {
 			fmt.Printf("Couldn't find anything for %x\n", b)
 		} else {
-			//fmt.Printf("%s %s \n", string([]byte{b}), toBase77(encoded))
 			fmt.Printf("%s", encoded.Base77())
 			used = append(used, encoded)
 		}
