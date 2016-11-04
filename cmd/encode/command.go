@@ -33,7 +33,7 @@ func readUrlList(filename string) ([]string, error) {
 func run(ctx context.Context, args []string) error {
 	msg := context.GetStringValue(ctx, "flags.message")
 	if msg == "" {
-		msg = "the quick fox jumps over the gate for whatever reason and danny dances the jig"
+		return fmt.Errorf("you must specify a message to encode")
 	}
 
 	var urls []string
