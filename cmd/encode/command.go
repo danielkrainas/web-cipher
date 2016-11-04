@@ -61,6 +61,12 @@ var (
 				Type:        cmd.FlagString,
 				Description: "",
 			},
+			{
+				Short:       "m",
+				Long:        "message",
+				Type:        cmd.FlagString,
+				Description: "",
+			},
 		},
 	}
 )
