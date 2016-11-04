@@ -1,6 +1,6 @@
-# Web Cipher
+# Weph (Web Cipher)
 
-Web cipher is a novel experimental cipher. It's based on classic book ciphers and uses an HTML page instead of a book to encode the message. This is a heavy prototype implementation written in Go. 
+Weph is a novel, experimental cipher. It's based on classic book ciphers and uses web page instead of a book to encode the message. This is a proof of concept implementation. 
 
 ## Theory 
 
