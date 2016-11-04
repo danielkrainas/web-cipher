@@ -2,8 +2,10 @@ package encode
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/danielkrainas/wiph/cipher"
 	"github.com/danielkrainas/wiph/cmd"
@@ -30,8 +32,43 @@ func readUrlList(filename string) ([]string, error) {
 	return urls, nil
 }
 
+func readMessageFromStdin() string {
+	bio := bufio.NewReader(os.Stdin)
+	result := ""
+	emptyCount := 0
+	for {
+		line, err := bio.ReadString('\n')
+		if err != nil {
+			break
+		}
+
+		line = strings.TrimSpace(line)
+		if line == "" {
+			emptyCount++
+			if emptyCount > 1 {
+				break
+			}
+		} else if emptyCount > 0 {
+			result += "\n"
+			emptyCount = 0
+		}
+
+		result += line
+	}
+
+	return result
+}
+
 func run(ctx context.Context, args []string) error {
 	msg := context.GetStringValue(ctx, "flags.message")
+	if readFromIn, ok := ctx.Value("flags.in").(bool); ok {
+		if msg != "" {
+			return errors.New("cannot specify a message flag and reading from input")
+		} else if readFromIn {
+			msg = readMessageFromStdin()
+		}
+	}
+
 	if msg == "" {
 		return fmt.Errorf("you must specify a message to encode")
 	}
@@ -92,6 +129,13 @@ var (
 				Long:        "message",
 				Type:        cmd.FlagString,
 				Description: "",
+			},
+			{
+				Short:       "i",
+				Long:        "in",
+				Type:        cmd.FlagBool,
+				Description: "",
+				Default:     false,
 			},
 		},
 	}
