@@ -42,6 +42,7 @@ func run(ctx context.Context, args []string) error {
 		}
 	}
 
+	fmt.Print("\n\n")
 	return nil
 }
 
