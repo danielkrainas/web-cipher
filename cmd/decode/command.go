@@ -1,4 +1,4 @@
-package encode
+package decode
 
 import (
 	"bufio"
@@ -13,7 +13,7 @@ import (
 )
 
 func init() {
-	cmd.Register("encode", Info)
+	cmd.Register("decode", Info)
 }
 
 func readUrlList(filename string) ([]string, error) {
@@ -60,17 +60,17 @@ func readMessageFromStdin() string {
 }
 
 func run(ctx context.Context, args []string) error {
-	msg := context.GetStringValue(ctx, "flags.message")
+	encodedMsg := context.GetStringValue(ctx, "flags.message")
 	if readFromIn, ok := ctx.Value("flags.in").(bool); ok {
-		if readFromIn && msg != "" {
+		if encodedMsg != "" && readFromIn {
 			return errors.New("cannot specify a message flag and reading from input")
 		} else if readFromIn {
-			msg = readMessageFromStdin()
+			encodedMsg = readMessageFromStdin()
 		}
 	}
 
-	if msg == "" {
-		return fmt.Errorf("you must specify a message to encode")
+	if encodedMsg == "" {
+		return fmt.Errorf("you must specify a message to decode")
 	}
 
 	var urls []string
@@ -95,15 +95,13 @@ func run(ctx context.Context, args []string) error {
 		i++
 	}
 
-	var used []*cipher.EncodedReference
-	buf := []byte(msg)
-	for _, b := range buf {
-		encoded := cipher.NextReference(b, used, references)
-		if encoded == nil {
-			fmt.Printf("Couldn't find anything for %x\n", b)
+	for _, glyph := range strings.Split(encodedMsg, "/") {
+		e := cipher.FromBase77(glyph)
+		r := cipher.Lookup(e.Reference.Index, e.Reference.Level, e.Reference.Url, references)
+		if r == nil || uint16(len(r.Text)) < e.CharIndex {
+			fmt.Print("#")
 		} else {
-			fmt.Printf("%s/", encoded.Base77())
-			used = append(used, encoded)
+			fmt.Print(r.Text[e.CharIndex])
 		}
 	}
 
@@ -113,9 +111,9 @@ func run(ctx context.Context, args []string) error {
 
 var (
 	Info = &cmd.Info{
-		Use:   "encode",
-		Short: "`encode`",
-		Long:  "`encode`",
+		Use:   "decode",
+		Short: "`decode`",
+		Long:  "`decode`",
 		Run:   cmd.ExecutorFunc(run),
 		Flags: []*cmd.Flag{
 			{
@@ -125,17 +123,17 @@ var (
 				Description: "",
 			},
 			{
-				Short:       "m",
-				Long:        "message",
-				Type:        cmd.FlagString,
-				Description: "",
-			},
-			{
 				Short:       "i",
 				Long:        "in",
 				Type:        cmd.FlagBool,
 				Description: "",
 				Default:     false,
+			},
+			{
+				Short:       "m",
+				Long:        "message",
+				Type:        cmd.FlagString,
+				Description: "",
 			},
 		},
 	}

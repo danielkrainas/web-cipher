@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	encodingChars = "abcdefghi=jklmnopqrst!uvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0987654321@#$%^&*~.+_-,"
+	encodingChars = []byte("abcdefghi=jklmnopqrst!uvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0987654321@#$%^&*~.+_-,")
 )
 
 type PageReference struct {
@@ -68,6 +68,73 @@ func (e *EncodedReference) Base77() string {
 	}
 
 	return strings.Join(s, "")
+}
+
+func indexOfEncodingChar(a byte) int {
+	for i, b := range encodingChars {
+		if b == a {
+			return i
+		}
+	}
+
+	return 0
+}
+
+func ToBase10(buf []byte) uint64 {
+	j := uint64(0)
+	k := []uint64{1, 77, 5929, 456533, 35153041, 2706784157}
+	if len(buf) > 5 {
+		j += k[5] * uint64(indexOfEncodingChar(buf[5]))
+	}
+
+	if len(buf) > 4 {
+		j += k[4] * uint64(indexOfEncodingChar(buf[4]))
+	}
+
+	if len(buf) > 3 {
+		j += k[3] * uint64(indexOfEncodingChar(buf[3]))
+	}
+
+	if len(buf) > 2 {
+		j += k[2] * uint64(indexOfEncodingChar(buf[2]))
+	}
+
+	if len(buf) > 1 {
+		j += k[1] * uint64(indexOfEncodingChar(buf[1]))
+	}
+
+	if len(buf) >= 1 {
+		j += k[0] * uint64(indexOfEncodingChar(buf[0]))
+	}
+
+	return j
+}
+
+func FromBase77(s string) *EncodedReference {
+	i := ToBase10([]byte(s))
+	buf := make([]byte, 8)
+	encoder := binary.BigEndian
+	encoder.PutUint64(buf, i)
+	e := &EncodedReference{
+		CharIndex: encoder.Uint16(buf[2:]),
+		Reference: &PageReference{
+			Url:   encoder.Uint16(buf),
+			Level: encoder.Uint16(buf[4:]),
+			Index: encoder.Uint16(buf[6:]),
+		},
+	}
+
+	return e
+}
+
+func Lookup(index uint16, level uint16, siteIndex uint16, references []*PageReference) *PageReference {
+	for _, r := range references {
+		if r.Index == index && r.Level == level && r.Url == siteIndex {
+			return r
+		}
+	}
+
+	return nil
 }
 
 func downloadContents(url string) (io.ReadCloser, error) {

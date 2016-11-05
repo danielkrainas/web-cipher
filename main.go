@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/danielkrainas/weph/cmd"
+	_ "github.com/danielkrainas/weph/cmd/decode"
 	_ "github.com/danielkrainas/weph/cmd/encode"
 	"github.com/danielkrainas/weph/cmd/root"
 	_ "github.com/danielkrainas/weph/cmd/version"
