@@ -62,7 +62,7 @@ func readMessageFromStdin() string {
 func run(ctx context.Context, args []string) error {
 	msg := context.GetStringValue(ctx, "flags.message")
 	if readFromIn, ok := ctx.Value("flags.in").(bool); ok {
-		if msg != "" {
+		if readFromIn && msg != "" {
 			return errors.New("cannot specify a message flag and reading from input")
 		} else if readFromIn {
 			msg = readMessageFromStdin()
